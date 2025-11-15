@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>依恋类型测试</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #6b8cbc;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .intro-card {
+            text-align: center;
+        }
+        
+        .intro-card p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #4a6fa5;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(74, 111, 165, 0.3);
+        }
+        
+        .btn:hover {
+            background: #3a5a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(74, 111, 165, 0.4);
+        }
+        
+        .question-card {
+            display: none;
+        }
+        
+        .question-number {
+            color: #4a6fa5;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e1e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option:hover {
+            border-color: #4a6fa5;
+            background-color: #f0f4fa;
+        }
+        
+        .option.selected {
+            border-color: #4a6fa5;
+            background-color: #e8eff7;
+        }
+        
+        .option input {
+            margin-right: 15px;
+            transform: scale(1.3);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e1e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #4a6fa5;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #6b8cbc;
+            font-weight: 500;
+        }
+        
+        .result-card {
+            display: none;
+            text-align: center;
+        }
+        
+        .result-title {
+            color: #4a6fa5;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .result-description {
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .chart-container {
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+        
+        .attachment-types {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .type-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8fafd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid #4a6fa5;
+        }
+        
+        .type-title {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        /* 新增样式：突出显示主要依恋类型 */
+        .primary-type {
+            background: linear-gradient(135deg, #4a6fa5, #6b8cbc);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(74, 111, 165, 0.4);
+            text-align: center;
+        }
+        
+        .primary-type-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .primary-type-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6b8cbc;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .attachment-types {
+                flex-direction: column;
+            }
+            
+            .primary-type-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-heart"></i> 依恋类型测试</h1>
+            <p class="subtitle">探索你的人际关系模式 - 基于依恋理论</p>
+        </header>
+        
+        <div class="card intro-card" id="intro-card">
+            <h2>欢迎参加依恋类型测试</h2>
+            <p>本测试基于心理学中的依恋理论，通过60道题目帮助你了解自己在亲密关系中的依恋风格。</p>
+            <p>测试大约需要10-15分钟完成，请根据你的真实感受选择最符合的选项。</p>
+            <p>你的回答将帮助我们确定你的主要依恋类型：安全型、焦虑型、回避型或恐惧型。</p>
+            <button class="btn" id="start-btn">开始测试</button>
+        </div>
+        
+        <div class="card question-card" id="question-card">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+                <div class="progress-text" id="progress-text">第 1 题，共 60 题</div>
+            </div>
+            
+            <div class="question-number">问题 <span id="current-question">1</span></div>
+            <div class="question-text" id="question-text">这里将显示问题内容</div>
+            
+            <div class="options" id="options-container">
+                <!-- 选项将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="navigation">
+                <button class="btn" id="prev-btn" disabled><i class="fas fa-arrow-left"></i> 上一题</button>
+                <button class="btn" id="submit-btn" style="display: none;">查看结果</button>
+            </div>
+        </div>
+        
+        <div class="card result-card" id="result-card">
+            <h2 class="result-title">你的测试结果</h2>
+            
+            <!-- 新增：突出显示主要依恋类型 -->
+            <div class="primary-type" id="primary-type-container">
+                <div class="primary-type-title" id="primary-type-title">安全型</div>
+                <div class="primary-type-subtitle">你的主要依恋类型</div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="result-chart"></canvas>
+            </div>
+            <div class="result-description" id="result-description">
+                <!-- 结果描述将通过JavaScript动态生成 -->
+            </div>
+            
+            <h3>四种依恋类型简介</h3>
+            <div class="attachment-types">
+                <div class="type-card">
+                    <h4 class="type-title">安全型</h4>
+                    <p>能够建立健康、平衡的亲密关系，既不过度依赖也不过度疏离。</p>
+                </div>
+                <div class="type-card">
+                    <h4 class="type-title">焦虑型</h4>
+                    <p>渴望亲密关系但常常担心被抛弃，需要大量 reassurance。</p>
+                </div>
+                <div class="type-card">
+                    <h4 class="type-title">回避型</h4>
+                    <p>重视独立和自给自足，可能对亲密关系感到不适。</p>
+                </div>
+                <div class="type-card">
+                    <h4 class="type-title">恐惧型</h4>
+                    <p>既渴望亲密又害怕受伤，在关系中表现出矛盾行为。</p>
+                </div>
+            </div>
+            
+            <button class="btn" id="restart-btn" style="margin-top: 30px;">重新测试</button>
+        </div>
+        
+        <footer>
+            <p>本测试仅供参考，不能替代专业心理评估。依恋类型可能会随着时间和经历而变化。</p>
+            <p>© 2025 依恋类型测试 | 基于心理学依恋理论</p>
+        </footer>
+    </div>
+
+    <script>
+        // 测试题目数据
+        const questions = [
+            "我常常担心我的伴侣不是真的爱我或不想和我在一起。",
+            "我发现自己很难完全信任伴侣。",
+            "我担心如果我不时刻保持联系，伴侣可能会离开我。",
+            "当伴侣不在身边时，我会感到焦虑。",
+            "我倾向于很快地投入感情。",
+            "我常常需要伴侣的保证，证明他们爱我。",
+            "当伴侣与其他潜在伴侣互动时，我会感到嫉妒。",
+            "我害怕被抛弃。",
+            "我需要大量的亲密和安慰。",
+            "当关系出现问题时，我会变得非常情绪化。",
+            "我倾向于理想化我的伴侣。",
+            "我担心自己不够好，配不上伴侣。",
+            "当伴侣需要空间时，我会感到不安。",
+            "我经常分析我的关系，寻找问题的迹象。",
+            "我倾向于过度解读伴侣的行为和言语。",
+            "当伴侣没有及时回复信息时，我会感到焦虑。",
+            "我害怕表达自己的需求，担心会把伴侣吓跑。",
+            "我倾向于在关系中牺牲自己的需求来取悦伴侣。",
+            "当关系进展顺利时，我有时会故意制造问题。",
+            "我很难在争吵后冷静下来。",
+            "我重视我的独立性，不喜欢依赖他人。",
+            "当关系变得太亲密时，我会感到不适。",
+            "我倾向于隐藏自己的真实感受。",
+            "我很难向伴侣表达脆弱。",
+            "当伴侣需要情感支持时，我不知如何回应。",
+            "我倾向于专注于工作或爱好，而不是情感关系。",
+            "我认为自己不需要亲密关系也能快乐。",
+            "当伴侣试图亲近时，我可能会退缩。",
+            "我很难承诺长期关系。",
+            "我倾向于批评伴侣的小缺点。",
+            "我常常觉得伴侣要求太多。",
+            "当关系出现问题时，我倾向于回避而不是面对。",
+            "我害怕被亲密关系束缚。",
+            "我倾向于在关系中保持情感距离。",
+            "我认为表达情感是软弱的表现。",
+            "我很难相信别人会真正关心我。",
+            "我既渴望亲密又害怕亲密。",
+            "当关系变得认真时，我感到矛盾。",
+            "我担心如果我太亲近，最终会受到伤害。",
+            "我发现自己在一段关系中反复无常。",
+            "我很难决定是否要完全投入一段关系。",
+            "我倾向于选择不适合我的伴侣。",
+            "当伴侣表达爱意时，我可能会感到不适。",
+            "我担心如果我展现真实的自己，伴侣会离开。",
+            "我常常在关系中感到不满足。",
+            "我倾向于在关系中扮演照顾者的角色。",
+            "我很难接受伴侣的爱和支持。",
+            "我常常觉得自己在关系中付出多于收获。",
+            "当伴侣需要我时，我可能会感到压力。",
+            "我倾向于压抑自己的情感需求。",
+            "我发现自己很难维持长期关系。",
+            "我常常在关系初期感到兴奋，但随后失去兴趣。",
+            "当伴侣过于亲近时，我可能会寻找借口疏远。",
+            "我担心亲密关系会让我失去自我。",
+            "我倾向于在关系中保持警惕，以防受伤。",
+            "我常常在关系中感到孤独，即使与伴侣在一起。",
+            "我很难向伴侣表达我的需求。",
+            "我倾向于选择情感上不可及的伴侣。",
+            "当关系进展顺利时，我可能会感到不安。",
+            "我常常在亲密和疏远之间摇摆不定。"
+        ];
+
+        // 初始化变量
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+        let attachmentScores = {
+            '安全型': 0,
+            '焦虑型': 0,
+            '回避型': 0,
+            '恐惧型': 0
+        };
+
+        // DOM元素
+        const introCard = document.getElementById('intro-card');
+        const questionCard = document.getElementById('question-card');
+        const resultCard = document.getElementById('result-card');
+        const startBtn = document.getElementById('start-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionText = document.getElementById('question-text');
+        const currentQuestionElement = document.getElementById('current-question');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const resultDescription = document.getElementById('result-description');
+        const primaryTypeContainer = document.getElementById('primary-type-container');
+        const primaryTypeTitle = document.getElementById('primary-type-title');
+
+        // 开始测试
+        startBtn.addEventListener('click', () => {
+            introCard.style.display = 'none';
+            questionCard.style.display = 'block';
+            showQuestion(currentQuestion);
+        });
+
+        // 显示问题
+        function showQuestion(index) {
+            currentQuestionElement.textContent = index + 1;
+            questionText.textContent = questions[index];
+            
+            // 更新进度条
+            const progress = ((index + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `第 ${index + 1} 题，共 ${questions.length} 题`;
+            
+            // 生成选项
+            optionsContainer.innerHTML = '';
+            const options = [
+                "非常不同意",
+                "不同意",
+                "中立",
+                "同意",
+                "非常同意"
+            ];
+            
+            options.forEach((option, i) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                if (answers[index] === i) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.innerHTML = `
+                    <input type="radio" name="option" id="option-${i}" value="${i}">
+                    <label for="option-${i}">${option}</label>
+                `;
+                
+                optionElement.addEventListener('click', () => {
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    optionElement.classList.add('selected');
+                    answers[index] = i;
+                    
+                    // 自动跳转到下一题
+                    setTimeout(() => {
+                        if (index < questions.length - 1) {
+                            currentQuestion++;
+                            showQuestion(currentQuestion);
+                        } else {
+                            // 如果是最后一题，显示提交按钮
+                            submitBtn.style.display = 'inline-block';
+                        }
+                    }, 300); // 延迟300ms给用户视觉反馈
+                });
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // 更新导航按钮状态
+            updateNavigationButtons();
+        }
+
+        // 更新导航按钮状态
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                submitBtn.style.display = 'inline-block';
+            } else {
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        // 上一题
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        // 提交测试
+        submitBtn.addEventListener('click', () => {
+            calculateResults();
+            questionCard.style.display = 'none';
+            resultCard.style.display = 'block';
+            showResults();
+        });
+
+        // 重新测试
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            attachmentScores = {
+                '安全型': 0,
+                '焦虑型': 0,
+                '回避型': 0,
+                '恐惧型': 0
+            };
+            
+            resultCard.style.display = 'none';
+            introCard.style.display = 'block';
+        });
+
+        // 计算结果
+        function calculateResults() {
+            // 根据答案计算各依恋类型的得分
+            // 注意：这是一个简化的算法，实际测试会有更复杂的计分方式
+            
+            for (let i = 0; i < answers.length; i++) {
+                const answer = answers[i];
+                if (answer === null) continue;
+                
+                // 根据题目编号和答案分配分数到不同的依恋类型
+                // 这里使用简化的分配逻辑
+                if (i < 15) {
+                    // 前15题主要测量焦虑型
+                    attachmentScores['焦虑型'] += answer;
+                } else if (i < 30) {
+                    // 接下来15题主要测量回避型
+                    attachmentScores['回避型'] += answer;
+                } else if (i < 45) {
+                    // 接下来15题主要测量恐惧型
+                    attachmentScores['恐惧型'] += answer;
+                } else {
+                    // 最后15题主要测量安全型（反向计分）
+                    attachmentScores['安全型'] += (4 - answer);
+                }
+            }
+            
+            // 调整分数范围，使总分不超过100
+            for (let type in attachmentScores) {
+                attachmentScores[type] = Math.min(100, Math.round(attachmentScores[type] * 100 / 75));
+            }
+        }
+
+        // 显示结果
+        function showResults() {
+            // 确定主要依恋类型
+            let primaryType = '安全型';
+            let maxScore = 0;
+            
+            for (let type in attachmentScores) {
+                if (attachmentScores[type] > maxScore) {
+                    maxScore = attachmentScores[type];
+                    primaryType = type;
+                }
+            }
+            
+            // 设置主要依恋类型的颜色
+            let typeColors = {
+                '安全型': 'linear-gradient(135deg, #4a6fa5, #6b8cbc)',
+                '焦虑型': 'linear-gradient(135deg, #ff6b6b, #ff8e8e)',
+                '回避型': 'linear-gradient(135deg, #51cf66, #69db7c)',
+                '恐惧型': 'linear-gradient(135deg, #cc5de8, #e599f7)'
+            };
+            
+            // 更新主要依恋类型显示
+            primaryTypeTitle.textContent = primaryType;
+            primaryTypeContainer.style.background = typeColors[primaryType];
+            
+            // 生成结果描述
+            let description = `<p>根据你的回答，你的主要依恋类型是：<strong>${primaryType}</strong>。</p>`;
+            
+            if (primaryType === '安全型') {
+                description += `
+                    <p>安全型依恋的人通常能够建立健康、平衡的亲密关系。你既能够享受亲密，也能够保持适当的独立性。你对自己和他人有积极的看法，能够有效地沟通你的需求，并在关系中感到安全和舒适。</p>
+                    <p>安全型依恋是在童年时期通过与主要照顾者的积极互动形成的，这种依恋风格有助于建立持久、满意的成人关系。</p>
+                `;
+            } else if (primaryType === '焦虑型') {
+                description += `
+                    <p>焦虑型依恋的人渴望亲密关系，但常常担心被抛弃或不被充分爱着。你可能会过度关注关系中的小细节，需要伴侣的持续保证和确认。当伴侣不在身边时，你可能会感到焦虑和不安全。</p>
+                    <p>这种依恋风格可能源于童年时期照顾者的不一致回应。通过提高自我价值感和学习自我安抚技巧，可以减轻关系中的焦虑。</p>
+                `;
+            } else if (primaryType === '回避型') {
+                description += `
+                    <p>回避型依恋的人重视独立和自给自足，可能对亲密关系感到不适。你可能会压抑情感需求，在关系变得太亲密时退缩。你倾向于专注于工作、爱好或其他活动，而不是情感联系。</p>
+                    <p>这种依恋风格可能源于童年时期被拒绝或忽视的经历。通过逐渐练习表达情感和接受亲密，可以建立更健康的关系模式。</p>
+                `;
+            } else if (primaryType === '恐惧型') {
+                description += `
+                    <p>恐惧型依恋的人既渴望亲密又害怕受伤，在关系中表现出矛盾行为。你可能会在亲近和疏远之间摇摆不定，担心被拒绝或受伤害。这种内部冲突可能导致关系中的不稳定和痛苦。</p>
+                    <p>这种依恋风格可能源于童年时期的创伤或不可预测的照顾环境。通过治疗和自我反思，可以学会管理这些恐惧并建立更安全的关系。</p>
+                `;
+            }
+            
+            description += `<p>请记住，依恋类型不是固定不变的，可以通过自我认知和有意识的努力而改变。</p>`;
+            resultDescription.innerHTML = description;
+            
+            // 创建图表
+            const ctx = document.getElementById('result-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(attachmentScores),
+                    datasets: [{
+                        label: '得分',
+                        data: Object.values(attachmentScores),
+                        backgroundColor: [
+                            'rgba(74, 111, 165, 0.7)',
+                            'rgba(255, 107, 107, 0.7)',
+                            'rgba(81, 207, 102, 0.7)',
+                            'rgba(204, 93, 232, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(74, 111, 165)',
+                            'rgb(255, 107, 107)',
+                            'rgb(81, 207, 102)',
+                            'rgb(204, 93, 232)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '得分'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: '依恋类型得分分布'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
