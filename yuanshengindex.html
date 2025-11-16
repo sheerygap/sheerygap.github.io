@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原生家庭伤痛评估测试</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .intro {
+            padding: 25px;
+            background-color: var(--light-color);
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .test-section {
+            padding: 20px;
+        }
+        
+        .question-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .question-group h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .question {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .question p {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .option {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 15px;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .result-section {
+            display: none;
+            padding: 30px;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .score-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .score-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin: 10px;
+        }
+        
+        .score-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .chart-container {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .radar-chart {
+            width: 100%;
+            height: 400px;
+            margin: 0 auto;
+        }
+        
+        .dimension-details {
+            margin-top: 30px;
+        }
+        
+        .dimension {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+        }
+        
+        .dimension h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 5px;
+        }
+        
+        .interpretation {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f0f7ff;
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .interpretation h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--light-color);
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                flex-direction: column;
+            }
+            
+            .option {
+                min-width: 100%;
+            }
+            
+            .score-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>原生家庭伤痛评估测试</h1>
+            <p class="subtitle">探索原生家庭经历对您当前心理状态的影响</p>
+        </header>
+        
+        <section class="intro">
+            <p>本测试包含60个问题，旨在帮助您了解原生家庭经历对您当前心理状态的影响。请根据您的实际情况选择最符合的选项。测试结果将评估您在8个维度的伤痛程度，并提供个性化的解读和建议。</p>
+            <p><strong>注意：</strong>本测试结果仅供参考，不能替代专业心理咨询。</p>
+        </section>
+        
+        <section class="test-section" id="testSection">
+            <!-- 低自我价值感 -->
+            <div class="question-group">
+                <h3>低自我价值感</h3>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>1. 我常常觉得自己不够好</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>2. 我很难接受别人的赞美</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>3. 我经常拿自己和别人比较，并觉得自己不如别人</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>4. 我害怕尝试新事物，因为担心会失败</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>5. 我觉得自己不配得到幸福和成功</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>6. 我常常需要别人的认可来确认自己的价值</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="lowSelfWorth">
+                    <p>7. 我倾向于贬低自己的成就</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 回避依恋 -->
+            <div class="question-group">
+                <h3>回避依恋</h3>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>8. 我害怕与人建立亲密关系</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>9. 当别人与我太过亲近时，我会感到不安</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>10. 我倾向于在关系中保持情感距离</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>11. 我很难向他人表达自己的情感需求</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>12. 当关系变得亲密时，我会有想要逃离的冲动</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>13. 我倾向于独立解决问题，不愿寻求帮助</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="avoidantAttachment">
+                    <p>14. 我害怕依赖他人，因为担心会被抛弃</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 过度掌控 -->
+            <div class="question-group">
+                <h3>过度掌控</h3>
+                <div class="question" data-dimension="overControl">
+                    <p>15. 我需要控制周围环境和情况才能感到安全</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>16. 当事情超出我的控制时，我会感到极度焦虑</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>17. 我倾向于为他人做决定</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>18. 我难以接受计划外的变化</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>19. 我倾向于过度规划和组织</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>20. 我难以信任他人能够把事情做好</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overControl">
+                    <p>21. 当事情不按计划进行时，我会感到非常沮丧</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 自我隐藏 -->
+            <div class="question-group">
+                <h3>自我隐藏</h3>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>22. 我倾向于隐藏自己的真实想法和感受</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>23. 我害怕在他人面前表现出脆弱</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>24. 我很少与他人分享我的困难和痛苦</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>25. 我担心如果别人了解真实的我，会不喜欢我</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>26. 我倾向于在社交场合中保持表面上的和谐</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>27. 我很少表达与他人不同的意见</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfConcealment">
+                    <p>28. 我害怕在他人面前犯错</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 情感纠结 -->
+            <div class="question-group">
+                <h3>情感纠结</h3>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>29. 我很难区分自己的情感和他人的情感</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>30. 我容易被他人的情绪状态影响</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>31. 我倾向于为他人的情绪状态负责</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>32. 我很难在关系中保持独立的自我</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>33. 我常常感到被亲密关系所淹没</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>34. 我难以表达与家人不同的观点</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="emotionalEnmeshment">
+                    <p>35. 我常常感到需要满足他人的期望</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 自责内疚 -->
+            <div class="question-group">
+                <h3>自责内疚</h3>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>36. 我常常为各种事情责备自己</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>37. 当事情出错时，我首先会想到是不是自己的错</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>38. 我常常感到内疚，即使没有做错什么</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>39. 我很难原谅自己的错误</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>40. 我常常回想过去的事情，思考自己本可以做得更好</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>41. 我倾向于为别人的感受和行为负责</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="selfBlameGuilt">
+                    <p>42. 我常常感到自己应该为家庭的问题负责</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 边界模糊 -->
+            <div class="question-group">
+                <h3>边界模糊</h3>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>43. 我很难在关系中设立和维护清晰的个人边界</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>44. 我常常感到被他人的需求和问题所淹没</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>45. 我难以对别人的请求说"不"</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>46. 我常常过度投入他人的问题</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>47. 我难以区分自己的责任和他人的责任</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>48. 我常常感到需要解决他人的问题</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="blurredBoundaries">
+                    <p>49. 我难以在照顾他人和照顾自己之间找到平衡</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 过度反应 -->
+            <div class="question-group">
+                <h3>过度反应</h3>
+                <div class="question" data-dimension="overreaction">
+                    <p>50. 我容易对小事产生强烈的情绪反应</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>51. 我常常事后后悔自己的过度反应</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>52. 我难以控制自己的愤怒或焦虑</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>53. 我对批评或拒绝特别敏感</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>54. 我容易陷入情绪化的状态，难以平静下来</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>55. 我常常因为小事而感到极度焦虑</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>56. 我容易对他人产生怀疑和不信任</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>57. 我容易陷入非黑即白的思维方式</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>58. 我容易对情境做出灾难化的解读</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>59. 我容易陷入过去的创伤回忆中</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+                <div class="question" data-dimension="overreaction">
+                    <p>60. 我容易对轻微的刺激产生强烈的生理反应</p>
+                    <div class="options">
+                        <div class="option" data-value="1">完全不符合</div>
+                        <div class="option" data-value="2">不太符合</div>
+                        <div class="option" data-value="3">有时符合</div>
+                        <div class="option" data-value="4">比较符合</div>
+                        <div class="option" data-value="5">完全符合</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button id="submitBtn">提交测试</button>
+            </div>
+        </section>
+        
+        <section class="result-section" id="resultSection">
+            <div class="result-header">
+                <h2>您的原生家庭伤痛评估结果</h2>
+                <p>以下是您在8个维度的伤痛程度评估</p>
+            </div>
+            
+            <div class="score-summary">
+                <div class="score-card">
+                    <h4>总体伤痛指数</h4>
+                    <div class="score-value" id="overallScore">68</div>
+                    <p>中等程度</p>
+                </div>
+                <div class="score-card">
+                    <h4>最显著维度</h4>
+                    <div class="score-value" id="highestDimension">自责内疚</div>
+                    <p>得分: 82</p>
+                </div>
+                <div class="score-card">
+                    <h4>最轻微维度</h4>
+                    <div class="score-value" id="lowestDimension">过度掌控</div>
+                    <p>得分: 45</p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">原生家庭伤痛结构图</h3>
+                <div class="radar-chart" id="radarChart">
+                    <!-- 雷达图将通过JavaScript生成 -->
+                    <canvas id="chartCanvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="dimension-details">
+                <div class="dimension">
+                    <h4>低自我价值感</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 70%"></div>
+                    </div>
+                    <p>您可能经常感到自己不够好，对自己的能力和价值持怀疑态度。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>回避依恋</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%"></div>
+                    </div>
+                    <p>您可能在亲密关系中感到不安，倾向于保持情感距离。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>过度掌控</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 45%"></div>
+                    </div>
+                    <p>您可能倾向于控制环境和他人，以获取安全感。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>自我隐藏</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 65%"></div>
+                    </div>
+                    <p>您可能习惯隐藏真实想法和情感，避免暴露脆弱面。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>情感纠结</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%"></div>
+                    </div>
+                    <p>您可能在关系中难以保持清晰的个人边界。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>自责内疚</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 82%"></div>
+                    </div>
+                    <p>您可能经常为各种事情责备自己，感到内疚。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>边界模糊</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 58%"></div>
+                    </div>
+                    <p>您可能难以在关系中设立和维护清晰的个人边界。</p>
+                </div>
+                
+                <div class="dimension">
+                    <h4>过度反应</h4>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 63%"></div>
+                    </div>
+                    <p>您可能对某些情境有过度的情绪或行为反应。</p>
+                </div>
+            </div>
+            
+            <div class="interpretation">
+                <h3>结果解读与建议</h3>
+                <p>根据您的测试结果，您在自责内疚、情感纠结和低自我价值感方面得分较高，这可能与您在原生家庭中承担过多责任或经历批评指责有关。</p>
+                <p><strong>建议：</strong></p>
+                <ul>
+                    <li>练习自我接纳和自我同情，减少自我批评</li>
+                    <li>学习设立健康的人际边界</li>
+                    <li>寻求专业心理咨询，探索原生家庭经历对当前生活的影响</li>
+                    <li>练习正念冥想，增强情绪调节能力</li>
+                </ul>
+                <p>请记住，理解原生家庭的影响是疗愈的第一步，您已经迈出了重要的一步。</p>
+            </div>
+            
+            <div class="btn-container">
+                <button id="retakeBtn">重新测试</button>
+            </div>
+        </section>
+        
+        <footer>
+            <p>本测试结果仅供参考，不能替代专业心理咨询。如果您感到困扰，建议寻求专业心理帮助。</p>
+            <p>© 2025 原生家庭伤痛评估测试</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 选项选择功能
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 清除同一问题中其他选项的选中状态
+                    const question = this.closest('.question');
+                    const otherOptions = question.querySelectorAll('.option');
+                    otherOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // 选中当前选项
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 提交按钮功能
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                // 在实际应用中，这里应该验证所有问题都已回答
+                // 并计算各维度的得分
+                
+                // 显示结果部分
+                document.getElementById('testSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+                
+                // 生成雷达图
+                generateRadarChart();
+            });
+            
+            // 重新测试按钮功能
+            document.getElementById('retakeBtn').addEventListener('click', function() {
+                // 重置所有选项
+                options.forEach(option => option.classList.remove('selected'));
+                
+                // 显示测试部分
+                document.getElementById('testSection').style.display = 'block';
+                document.getElementById('resultSection').style.display = 'none';
+            });
+            
+            // 生成雷达图
+            function generateRadarChart() {
+                const canvas = document.getElementById('chartCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置canvas尺寸
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.8;
+                
+                // 维度数据
+                const dimensions = [
+                    '低自我价值', '回避依恋', '过度掌控', 
+                    '自我隐藏', '情感纠结', '自责内疚', 
+                    '边界模糊', '过度反应'
+                ];
+                
+                // 模拟得分数据 (实际应从用户回答计算)
+                const scores = [70, 60, 45, 65, 75, 82, 58, 63];
+                
+                // 绘制雷达图
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 绘制网格和标签
+                drawRadarGrid(ctx, centerX, centerY, radius, dimensions);
+                
+                // 绘制数据多边形
+                drawDataPolygon(ctx, centerX, centerY, radius, dimensions, scores);
+            }
+            
+            function drawRadarGrid(ctx, centerX, centerY, radius, dimensions) {
+                const numDimensions = dimensions.length;
+                const angleStep = (Math.PI * 2) / numDimensions;
+                
+                // 绘制同心圆和刻度
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.fillStyle = '#f8f9fa';
+                ctx.lineWidth = 1;
+                
+                for (let i = 1; i <= 5; i++) {
+                    const currentRadius = radius * (i / 5);
+                    ctx.beginPath();
+                    
+                    for (let j = 0; j <= numDimensions; j++) {
+                        const angle = j * angleStep - Math.PI / 2;
+                        const x = centerX + currentRadius * Math.cos(angle);
+                        const y = centerY + currentRadius * Math.sin(angle);
+                        
+                        if (j === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    
+                    ctx.stroke();
+                }
+                
+                // 绘制维度轴和标签
+                ctx.strokeStyle = '#b0b0b0';
+                ctx.fillStyle = '#4a6fa5';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                for (let i = 0; i < numDimensions; i++) {
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+                    
+                    // 绘制轴线
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    
+                    // 绘制标签
+                    const labelX = centerX + (radius + 30) * Math.cos(angle);
+                    const labelY = centerY + (radius + 30) * Math.sin(angle);
+                    
+                    ctx.fillText(dimensions[i], labelX, labelY);
+                }
+            }
+            
+            function drawDataPolygon(ctx, centerX, centerY, radius, dimensions, scores) {
+                const numDimensions = dimensions.length;
+                const angleStep = (Math.PI * 2) / numDimensions;
+                
+                // 绘制数据多边形
+                ctx.fillStyle = 'rgba(74, 111, 165, 0.3)';
+                ctx.strokeStyle = '#4a6fa5';
+                ctx.lineWidth = 2;
+                
+                ctx.beginPath();
+                
+                for (let i = 0; i < numDimensions; i++) {
+                    const score = scores[i];
+                    const scaledRadius = radius * (score / 100);
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = centerX + scaledRadius * Math.cos(angle);
+                    const y = centerY + scaledRadius * Math.sin(angle);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // 绘制数据点
+                ctx.fillStyle = '#4a6fa5';
+                
+                for (let i = 0; i < numDimensions; i++) {
+                    const score = scores[i];
+                    const scaledRadius = radius * (score / 100);
+                    const angle = i * angleStep - Math.PI / 2;
+                    const x = centerX + scaledRadius * Math.cos(angle);
+                    const y = centerY + scaledRadius * Math.sin(angle);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // 初始化雷达图
+            generateRadarChart();
+        });
+    </script>
+</body>
+</html>
